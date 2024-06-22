@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+    <style>
+        /* Notification container styles */
+        .notification-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #ff5454;
+            /* Red background color */
+            color: #fff;
+            /* White text color */
+            text-align: center;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 9999;
+            /* Ensure it's on top */
+        }
+
+        /* Style the notification link */
+        .notification-container a {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        /* Animation for the notification container */
+        @keyframes slideDown {
+            from {
+                top: -50px;
+            }
+
+            to {
+                top: 0;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                top: 0px;
+            }
+
+            to {
+                top: -50;
+            }
+        }
+
+        /* Apply animation to the notification */
+        .notification {
+            animation: slideDown 0.5s ease-in-out;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="notification-container notification">
+        <p class="notification">Error Occured Because ....</p>
+    </div>
+    <div class="main-cont" style="overflow: hidden; display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.8);">
+        <div style="padding: 20px; text-align: center; width: 100vw; height: 100vh;">
+            <img src="https://img.freepik.com/free-vector/oops-404-error-with-broken-robot-concept-illustration_114360-1932.jpg?size=626&ext=jpg&ga=GA1.2.325080253.1689309823&semt=sph" alt="Image Description" style="max-width: 100%; height: auto; margin-top: 20px;">
+            
+        </div>
+    </div>
+    
+
+
+
+
+
+    <script>
+        // Extract the message from the URL
+        const params = new URLSearchParams(window.location.search);
+        const message = params.get('message');
+    
+        // Replace the placeholder with the message
+        document.querySelector('.notification').textContent = message;
+        const notificationContainer = document.querySelector('.notification-container');
+        setTimeout(() => {
+            // Hide the notification container
+            notificationContainer.style.animation = 'slideUp 0.5s ease-in-out';
+    
+            // After the animation, show the main container
+            setTimeout(() => {
+                notificationContainer.style.display = 'none';
+                const mainContainer = document.querySelector('.main-cont');
+                mainContainer.style.display = 'block';
+            }, 2000);
+        }, 2000);
+    </script>
+    
+
+</body>
+
+</html>

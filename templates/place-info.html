@@ -1,0 +1,2181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from demo.foxthemes.net/socialite/feed.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 20 Jul 2023 17:40:27 GMT -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Favicon -->
+    <link href="assets/images/favicon.png" rel="icon" type="image/png">
+
+    <!-- Basic Page Needs
+        ================================================== -->
+    <title>Niagara Falls</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Socialite is - Professional A unique and beautiful collection of UI elements">
+
+    <!-- icons
+    ================================================== -->
+    <link rel="stylesheet" href="assets/css/icons.css">
+
+    <!-- CSS 
+    ================================================== -->
+    <link rel="stylesheet" href="assets/css/uikit.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="assets/css/tailwind.css" rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+
+<body>
+
+
+    <div id="wrapper">
+
+        <!-- Header -->
+        <header>
+            <div class="header_wrap">
+                <div class="header_inner mcontainer">
+                    <div class="left_side">
+
+
+
+                        <div id="logo">
+                            <a href="/feed">
+                                <img src="assets/images/logo.png" alt="">
+                                <img src="assets/images/logo-mobile.png" class="logo_mobile" alt="">
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- search icon for mobile -->
+                    <div class="header-search-icon" uk-toggle="target: #wrapper ; cls: show-searchbox"> </div>
+                    <div class="header_search"><i class="uil-search-alt"></i>
+                        <input id="headerSearch" value="" type="text" class="form-control"
+                            placeholder="Search for Friends , Videos and more.." autocomplete="off">
+                        <div uk-drop="mode: click" class="header_search_dropdown">
+
+                            <h4 class="search_title"> Results </h4>
+                            <ul id="searchList">
+
+                            </ul>
+
+                        </div>
+                    </div>
+
+
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", () => {
+                            const headerSearch = document.getElementById('headerSearch');
+                            const searchList = document.getElementById('searchList');
+
+                            headerSearch.addEventListener('input', async () => {
+                                const searchText = headerSearch.value.trim();
+
+                                if (searchText.length < 2) {
+                                    searchList.innerHTML = ''; // Clear the list if less than 2 characters
+                                    return;
+                                }
+
+                                try {
+                                    const response = await fetch('/search', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ searchText })
+                                    });
+
+                                    if (!response.ok) {
+                                        throw new Error('Failed to fetch search results');
+                                    }
+
+                                    const results = await response.json();
+                                    displaySearchResults(results);
+                                } catch (error) {
+                                    console.error('Error fetching search results:', error);
+                                }
+                            });
+
+                            function displaySearchResults(results) {
+                                searchList.innerHTML = ''; // Clear previous results
+
+                                results.forEach(result => {
+                                    const listItem = document.createElement('li');
+                                    let listItemContent = '';
+
+                                    if (result.type === 'destination') {
+                                        listItemContent = `
+                        <a href="/places?id=${result.data.destinationId}">
+                            <img src="${result.data.destImageUrls[0].split(',@,')[1]}" alt="${result.data.destinationName}" class="list-avatar">
+                            <div class="list-name">${result.data.destinationName}</div>
+                        </a>
+                    `;
+                                    } else if (result.type === 'user') {
+                                        listItemContent = `
+                        <a href="#">
+                            <img src="${result.data.profileImageUrl}" alt="User" class="list-avatar">
+                            <div class="list-name">${result.data.username}</div>
+                        </a>
+                    `;
+                                    }
+
+                                    listItem.innerHTML = listItemContent;
+                                    searchList.appendChild(listItem);
+                                });
+                            }
+                        });
+                    </script>
+                    <div class="right_side">
+
+                        <div class="header_widgets">
+
+
+
+                            <a href="#" class="is_icon" uk-tooltip="title: Notifications">
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z">
+                                    </path>
+                                </svg>
+                                <span>0</span>
+                            </a>
+                            <div uk-drop="mode: click" class="header_dropdown">
+                                <div class="dropdown_scrollbar" data-simplebar>
+                                    <div class="drop_headline">
+                                        <h4>Notifications </h4>
+                                        <div class="btn_action">
+                                            <a href="#" data-tippy-placement="left" title="Notifications">
+                                                <ion-icon name="settings-outline"></ion-icon>
+                                            </a>
+                                            <a href="#" data-tippy-placement="left" title="Mark as read all">
+                                                <ion-icon name="checkbox-outline"></ion-icon>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <ul>
+                                        <li>
+                                            <a href="#">
+                                                <div class="drop_avatar">
+                                                    <!-- <img src="assets/images/avatars/avatar-1.jpg" alt="">-->
+                                                </div>
+                                                <!-- <span class="drop_icon bg-gradient-primary">
+                                                    <i class="icon-feather-thumbs-up"></i>
+                                                </span>-->
+                                                <div class="drop_text">
+                                                    <p>
+                                                        <strong> </strong>
+                                                        <span class="text-link"> </span>
+                                                    </p>
+                                                    <time> </time>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+
+
+
+                            <a href="#">
+                                <img id="profileImageUrl" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                                    class="is_avatar" alt="">
+                            </a>
+                            <div uk-drop="mode: click;offset:5" class="header_dropdown profile_dropdown">
+
+                                <a href="/profile" class="user">
+                                    <div class="user_avatar">
+                                        <img id="profileImageUrl2"
+                                            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="">
+                                    </div>
+                                    <div class="user_name">
+                                        <div id="firstName-display"> Stella Johnson </div>
+                                        <span id="username-display"> @johnson</span>
+                                    </div>
+                                </a>
+
+
+
+
+
+
+
+
+
+
+
+                                <hr>
+                                <a href="pages-upgrade.html" class="is-link">
+                                    <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    Upgrade To Premium </span>
+                                </a>
+                                <hr>
+                                <a href="/myaccount">
+                                    <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    My Account
+                                </a>
+                                <a href="groups.html">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    Manage Pages
+                                </a>
+                                <a href="pages-setting.html">
+                                    <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
+                                        <path fill-rule="evenodd"
+                                            d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    My Billing
+                                </a>
+                                <a href="#" id="night-mode" class="btn-night-mode">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                                    </svg>
+                                    Night mode
+                                    <span class="btn-night-mode-switch">
+                                        <span class="uk-switch-button"></span>
+                                    </span>
+                                </a>
+                                <a href="landing.html">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                        </path>
+                                    </svg>
+                                    Log Out
+                                </a>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </header>
+
+
+
+        <!-- Main Contents -->
+        <div class="main_content">
+            <div class="mcontainer">
+
+                <!-- cover -->
+                <div class="profile lg:rounded-b-xl">
+
+                    <div class="profiles_banner">
+                        <img id="mainheaderImgDest"
+                            src="https://static.vecteezy.com/system/resources/thumbnails/013/166/213/small/visual-illustration-of-the-loading-for-icon-symbol-website-apps-art-illustration-or-graphic-design-element-format-png.png"
+                            alt="" class="z-10">
+                    </div>
+                    <style>
+                        @media (min-width:1000px) {
+                            .addressParent {
+                                width: 70%;
+                            }
+                        }
+                    </style>
+                    <div class="profiles_content">
+                        <div class="profile_info lg:p-3">
+                            <h1 id="titleDest"></h1>
+                            <div
+                                class="flex space-x-2 items-center md:pt-3 text-base md:justify-start justify-center addressParent">
+                                <p id="aboutShortDest">
+
+                                </p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex items-center space-x-4 lg:absolute bottom-0 right-0 p-6 z-10 justify-center md:text-base font-medium">
+                            <a id="shareDest" href="#"
+                                class="flex items-center justify-center h-10 px-6 rounded-md space-x-1.5 bg-gray-200">
+                                <span> Share </span>
+                            </a>
+                            <a id="CreatePost" href="#"
+                                class="flex items-center justify-center h-10 px-6 rounded-md space-x-1.5 bg-blue-600 text-white"
+                                uk-toggle="target: #create-post-modal">
+                                <ion-icon name="color-wand" class="text-xl"></ion-icon>
+                                <span> Create Post</span>
+                            </a>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="md:flex  md:space-x-8 lg:mx-14">
+                    <div class="space-y-5 flex-shrink-0 md:w-7/12">
+
+
+
+                        <div class="card p-7">
+
+                            <div class="space-y-4">
+
+                                <div class="space-y-4">
+                                    <h1 class="block text-xl font-bold"> Description </h1>
+                                    <p id="aboutLongDest"></p>
+
+
+                                </div>
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="w-full flex-shirink-0">
+
+                        <div class="card px-6 py-7">
+                            <div class="mb-7">
+                                <div class="grid grid-flow-col gap-2 mt-4 text-center">
+                                    <a href="#" class="hover:bg-gray-100 rounded-md py-2">
+                                        <h4 class="font-bold text-2xl block mt-3"> 860 </h4>
+                                        <div class="mt-1"> Posts </div>
+                                    </a>
+                                    <a href="#" class="hover:bg-gray-100 rounded-md py-2">
+                                        <h4 class="font-bold text-2xl block mt-3"> 18.9K </h4>
+                                        <div class="mt-1"> Viewed </div>
+                                    </a>
+                                    <a href="#" class="hover:bg-gray-100 rounded-md py-2">
+                                        <h4 class="font-bold text-2xl block mt-3"> 1.5K </h4>
+                                        <div class="mt-1"> Shared </div>
+                                    </a>
+                                </div>
+
+                            </div>
+
+
+
+                        </div>
+
+                        <!-- Content Here-->
+
+
+                    </div>
+
+                </div>
+
+
+
+
+                <style>
+                    .grid-container {
+                        display: grid;
+                        grid-template-columns: 1fr;
+                        gap: 10px;
+                    }
+
+                    @media (min-width: 800px) {
+                        .grid-container {
+                            grid-template-columns: repeat(2, 1fr);
+                        }
+                    }
+
+                    /* Mobile device specific styling */
+                    @media (max-width: 640px) {
+                        .grid-container {
+                            display: block;
+                        }
+                    }
+                </style>
+
+                <div style="margin-top: 70px;" class="lg:flex lg:space-x-10">
+                    <div id="destPosts" class="grid-container space-y-7">
+
+
+
+
+
+
+
+
+
+
+                    </div>
+
+
+                </div>
+                <div id="LoadMore" class="flex justify-center mt-6">
+                    <a href="#"
+                        class="bg-white dark:bg-gray-900 font-semibold my-3 px-6 py-2 rounded-full shadow-md dark:bg-gray-800 dark:text-white">
+                        Load more ..</a>
+                </div>
+
+
+
+
+
+
+                <h2 class="text-2xl font-semibold m-5"> Photos </h2>
+                <div id="imageGallery" class="grid md:grid-cols-4 grid-cols-2 gap-3 mt-5">
+
+
+                </div>
+
+                <script>
+                    async function getPostDetails(postId) {
+                        // Simulate fetching post details (replace with your actual implementation)
+                        return new Promise((resolve) => {
+                            setTimeout(() => {
+                                resolve({ likes: Math.floor(Math.random() * 1000), id: postId });
+                            }, 100);
+                        });
+                    }
+                    async function fetchTopLikedPosts(destinationId) {
+                        try {
+                            const response = await fetch(`/get-single-destination?id=${destinationId}`);
+                            if (!response.ok) {
+                                throw new Error('Failed to fetch destination data');
+                            }
+
+                            const destinationData = await response.json();
+                            const posts = destinationData.posts;
+                            const postKeys = Object.keys(posts);
+
+                            // Fetch post details and collect likes
+                            const postDetailsArray = [];
+                            for (const key of postKeys) {
+                                const data = await getPostDetails(key);
+                                if (data) {
+                                    postDetailsArray.push(data);
+                                }
+                            }
+
+                            // Sort posts by likes in descending order
+                            postDetailsArray.sort((a, b) => b.postDetails.likes - a.postDetails.likes);
+
+                            // Get the top 8 liked posts
+                            const topLikedPosts = postDetailsArray.slice(0, 8);
+
+                            // Store the top 8 liked posts in an array and print each one
+                            const topLikedPostsArray = [];
+                            console.log(topLikedPostsArray);
+                            topLikedPosts.forEach(post => {
+                                topLikedPostsArray.push(post);
+                                console.log(`Text: ${post.postDetails.text}, Likes: ${post.postDetails.likes}, ImageUrl: ${post.postDetails.imageUrls[0]}`);
+                            });
+
+                            // Select the imageGallery container
+                            const imageGallery = document.getElementById('imageGallery');
+                            if (!imageGallery) {
+                                console.error('Image gallery container not found');
+                                return;
+                            }
+
+                            // Clear existing content if needed
+                            imageGallery.innerHTML = '';
+
+                            // Create and append new containers
+                            topLikedPosts.forEach(post => {
+                                const container = document.createElement('div');
+                                container.innerHTML = `
+                                    <div class="bg-green-400 max-w-full lg:h-56 h-48 rounded-lg relative overflow-hidden shadow uk-transition-toggle">
+                                        <img src="${post.postDetails.imageUrls[0].split(",@,")[1]}" class="w-full h-full absolute object-cover inset-0">
+                                        <!-- overlay -->
+                                        <div class="-bottom-12 absolute bg-gradient-to-b from-transparent h-1/2 to-gray-800 uk-transition-slide-bottom-small w-full"></div>
+                                        <div class="absolute bottom-0 w-full p-3 text-white uk-transition-slide-bottom-small flex items-center">
+                                            <div class="flex-1">
+                                                <div class="text-lg">${post.postDetails.text}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                     `;
+                                imageGallery.appendChild(container);
+                            });
+                        } catch (error) {
+                            console.error('Error fetching top liked posts:', error);
+                        }
+                    }
+
+                    function getParameterByName(name, url) {
+                        if (!url) url = window.location.href;
+                        name = name.replace(/[[\]]/g, '\\$&');
+                        const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                            results = regex.exec(url);
+                        if (!results) return null;
+                        if (!results[2]) return '';
+                        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+                    }
+                    // Example usage:
+                    const destinationId = getParameterByName('id');
+                    fetchTopLikedPosts(destinationId);
+                </script>
+
+                <div style="margin-top: 50px;" class="my-4 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-semibold"> Lists You May Like </h2>
+                    </div>
+                    <a href="/place" class="text-blue-500"> See all </a>
+                </div>
+                <div class="relative uk-slider" uk-slider="finite: true">
+
+                    <div class="uk-slider-container px-1 py-3">
+
+                        <ul id="popularDest"
+                            class="uk-slider-items uk-child-width-1-5@m uk-child-width-1-4@s uk-child-width-1-2 uk-grid-small uk-grid"
+                            style="transform: translate3d(0px, 0px, 0px);">
+                        </ul>
+                        <a class="absolute bg-white top-20 -mt-2 flex items-center justify-center p-2 -left-4 rounded-full shadow-md text-xl w-9 z-10 dark:bg-gray-800 dark:text-white uk-invisible"
+                            href="#" uk-slider-item="previous"> <i class="icon-feather-chevron-left"></i></a>
+                        <a class="absolute bg-white top-20 -mt-2 flex items-center justify-center p-2 -right-4 rounded-full shadow-md text-xl w-9 z-10 dark:bg-gray-800 dark:text-white"
+                            href="#" uk-slider-item="next"> <i class="icon-feather-chevron-right"></i></a>
+                    </div>
+                </div>
+
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", async () => {
+                        try {
+                            const response = await fetch('/get-destinations');
+                            if (!response.ok) {
+                                throw new Error('Failed to fetch destinations');
+                            }
+
+                            const destinations = await response.json();
+                            const popularDest = document.getElementById('popularDest');
+
+                            destinations.forEach(destination => {
+                                const listItem = document.createElement('li');
+                                listItem.tabIndex = -1;
+                                listItem.classList.add('uk-active');
+                                listItem.innerHTML = `
+                                    <div  class="rounded-xl overflow-hidden relative w-full h-44 cursor-pointer transform hover:scale-105 duration-300 hover:shadow-md" onclick="sendTo('${destination.destinationId}')">
+                                        <div class="absolute w-full h-3/4 -bottom-12 bg-gradient-to-b from-transparent to-gray-800 z-10"></div>
+                                        <img src="${destination.destImageUrls[0].split(',@,')[1]}" class="absolute w-full h-full object-cover" alt="${destination.name}">
+                                        <div class="absolute bottom-0 w-full p-3 text-white z-20 font-semibold">
+                                            <div class="text-sm">${destination.country}</div>
+                                            <div class="text-xl">${destination.destinationName}</div>
+                                        </div>
+                                    </div>
+                                `;
+                                popularDest.appendChild(listItem);
+                            });
+                        } catch (error) {
+                            console.error('Error fetching destinations:', error);
+                        }
+                    });
+
+                    function sendTo(destinationId) {
+                        console.log("Destination ID:", destinationId);
+                        window.open(`/places?id=${destinationId}`, '_blank');
+                    }
+                </script>
+
+
+
+                <div style="margin-top: 50px;" class="card p-6">
+
+                    <h1 class="block text-lg font-semibold mb-4"> Comments </h1>
+
+                    <div id="destComments" style="height: 500px; overflow-y: scroll;" class="space-y-5">
+
+
+
+                    </div>
+
+                    <div style="display: none;" class="flex justify-center mt-9">
+                        <a href="#" class="bg-gray-50 border hover:bg-gray-100 px-4 py-1.5 rounded-full text-sm">More
+                            Comments ..</a>
+                    </div>
+                    <div class="bg-gray-100 rounded-full m-3 relative dark:bg-gray-800 border-t">
+                        <input id="commentinputDest" placeholder="Add your Comment.."
+                            class="bg-transparent max-h-10 shadow-none px-5">
+                        <div class="-m-0.5 absolute bottom-0 flex items-center right-3 text-xl">
+                            <input id="addcommentDest" type="button" value="Submit">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.getElementById('addcommentDest').addEventListener('click', async () => {
+            const comment = document.getElementById('commentinputDest').value;
+            const destinationId = getParameterByName('id'); // replace with actual destination ID
+
+            if (comment.trim() === '') {
+                alert('Comment cannot be empty');
+                return;
+            }
+
+            const payload = {
+                destinationId: destinationId,
+                comment: comment,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch('/addCommentDest', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert('Comment added successfully');
+                    document.getElementById('commentinputDest').value = ''; // clear the input field
+                } else {
+                    alert('Failed to add comment');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred');
+            }
+        });
+    </script>
+    <script>
+        async function fetchDestinationComments(destinationId) {
+            try {
+                const response = await fetch(`/get-single-destination?id=${destinationId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch destination');
+                }
+
+                const destinationData = await response.json();
+                console.log(destinationData);
+
+                // Store details in variables if needed
+                const { destinationName, description, shortdescription, comments, destImageUrls, country, temperature, rating, nearestCity, posts } = destinationData;
+
+                // Get the destination comments container
+                const destCommentsContainer = document.getElementById('destComments');
+                if (!destCommentsContainer) {
+                    console.error('Destination comments container not found');
+                    return;
+                }
+
+                // Clear previous comments if any
+                destCommentsContainer.innerHTML = '';
+
+                // Sort comments by timestamp in descending order (recent first)
+                const sortedComments = Object.keys(comments).map(key => comments[key]).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                // Iterate through sorted comments and create HTML elements
+                sortedComments.forEach(({ comment, timestamp }) => {
+                    // Create elements for comment container
+                    const commentContainer = document.createElement('div');
+                    commentContainer.classList.add('flex', 'gap-x-4', 'relative', 'rounded-md');
+                    commentContainer.innerHTML = `
+                    <img src="assets/images/avatars/avatar-3.jpg" alt="Avatar" class="rounded-full shadow w-12 h-12">
+                    <div>
+                        <h4 class="text-base m-0 font-semibold">Unknowm</h4>
+                        <span class="text-gray-700 text-sm">${formatDate(timestamp)}</span>
+                        <p class="mt-3 md:ml-0 -ml-16">${comment}</p>
+                    </div>
+                `;
+
+                    // Append comment container to destination comments container
+                    destCommentsContainer.appendChild(commentContainer);
+                });
+
+            } catch (error) {
+                console.error('Error fetching destination details:', error);
+                // Handle error: Display error message or take appropriate action
+            }
+        }
+
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return `${date.getDate()}th, ${date.toLocaleString('en-US', { month: 'long' })} ${date.getFullYear()}`;
+        }
+
+        // Example usage:
+        fetchDestinationComments(destinationId);
+    </script>
+
+
+    <!-- open chat box -->
+    <div uk-toggle="target: #offcanvas-chat" class="start-chat">
+        <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+        </svg>
+    </div>
+
+    <div id="offcanvas-chat" uk-offcanvas="flip: true; overlay: true">
+        <div class="uk-offcanvas-bar bg-white p-0 w-full lg:w-80 shadow-2xl">
+
+
+            <div class="relative pt-5 px-4">
+
+                <h3 class="text-2xl font-bold mb-2"> Chats </h3>
+
+                <div class="absolute right-3 top-4 flex items-center space-x-2">
+
+                    <button class="uk-offcanvas-close  px-2 -mt-1 relative rounded-full inset-0 lg:hidden blcok"
+                        type="button" uk-close></button>
+
+                    <a href="#" uk-toggle="target: #search;animation: uk-animation-slide-top-small">
+                        <ion-icon name="search" class="text-xl hover:bg-gray-100 p-1 rounded-full"></ion-icon>
+                    </a>
+                    <a href="#">
+                        <ion-icon name="settings-outline" class="text-xl hover:bg-gray-100 p-1 rounded-full"></ion-icon>
+                    </a>
+                    <a href="#">
+                        <ion-icon name="ellipsis-vertical"
+                            class="text-xl hover:bg-gray-100 p-1 rounded-full"></ion-icon>
+                    </a>
+                    <div class="bg-white w-56 shadow-md mx-auto p-2 mt-12 rounded-md text-gray-500 hidden border border-gray-100 dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700"
+                        uk-drop="mode: click;pos: bottom-right;animation: uk-animation-slide-bottom-small; offset:5">
+                        <ul class="space-y-1">
+                            <li>
+                                <a href="#"
+                                    class="flex items-center px-3 py-2 hover:bg-gray-100 hover:text-gray-800 rounded-md dark:hover:bg-gray-800">
+                                    <ion-icon name="checkbox-outline" class="pr-2 text-xl"></ion-icon> Mark all as read
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="flex items-center px-3 py-2 hover:bg-gray-100 hover:text-gray-800 rounded-md dark:hover:bg-gray-800">
+                                    <ion-icon name="settings-outline" class="pr-2 text-xl"></ion-icon> Chat setting
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="flex items-center px-3 py-2 hover:bg-gray-100 hover:text-gray-800 rounded-md dark:hover:bg-gray-800">
+                                    <ion-icon name="notifications-off-outline" class="pr-2 text-lg"></ion-icon> Disable
+                                    notifications
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="flex items-center px-3 py-2 hover:bg-gray-100 hover:text-gray-800 rounded-md dark:hover:bg-gray-800">
+                                    <ion-icon name="star-outline" class="pr-2 text-xl"></ion-icon> Create a group chat
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+            <div class="absolute bg-white z-10 w-full -mt-5 lg:-mt-2 transform translate-y-1.5 py-2 border-b items-center flex"
+                id="search" hidden>
+                <input type="text" placeholder="Search.." class="flex-1">
+                <ion-icon name="close-outline" class="text-2xl hover:bg-gray-100 p-1 rounded-full mr-4 cursor-pointer"
+                    uk-toggle="target: #search;animation: uk-animation-slide-top-small"></ion-icon>
+            </div>
+
+            <nav class="responsive-nav border-b extanded mb-2 -mt-2">
+                <ul uk-switcher="connect: #chats-tab; animation: uk-animation-fade">
+                    <li class="uk-active"><a class="active" href="#0"> Friends </a></li>
+                    <li><a href="#0">Groups <span> 10 </span> </a></li>
+                </ul>
+            </nav>
+
+            <div class="contact-list px-2 uk-switcher" id="chats-tab">
+
+                <div class="p-1">
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-7.jpg" alt="">
+                        </div>
+                        <div class="contact-username"> Alex Dolgove</div>
+                    </a>
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-8.jpg" alt="">
+                            <span class="user_status status_online"></span>
+                        </div>
+                        <div class="contact-username"> Dennis Han</div>
+                    </a>
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-2.jpg" alt="">
+                            <span class="user_status"></span>
+                        </div>
+                        <div class="contact-username"> Erica Jones</div>
+                    </a>
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-3.jpg" alt="">
+                        </div>
+                        <div class="contact-username">Stella Johnson</div>
+                    </a>
+
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-5.jpg" alt="">
+                        </div>
+                        <div class="contact-username">Adrian Mohani </div>
+                    </a>
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-6.jpg" alt="">
+                        </div>
+                        <div class="contact-username"> Jonathan Madano</div>
+                    </a>
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-2.jpg" alt="">
+                            <span class="user_status"></span>
+                        </div>
+                        <div class="contact-username"> Erica Jones</div>
+                    </a>
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-1.jpg" alt="">
+                            <span class="user_status status_online"></span>
+                        </div>
+                        <div class="contact-username"> Dennis Han</div>
+                    </a>
+
+
+                </div>
+                <div class="p-1">
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-7.jpg" alt="">
+                        </div>
+                        <div class="contact-username"> Alex Dolgove</div>
+                    </a>
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-8.jpg" alt="">
+                            <span class="user_status status_online"></span>
+                        </div>
+                        <div class="contact-username"> Dennis Han</div>
+                    </a>
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-2.jpg" alt="">
+                            <span class="user_status"></span>
+                        </div>
+                        <div class="contact-username"> Erica Jones</div>
+                    </a>
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-3.jpg" alt="">
+                        </div>
+                        <div class="contact-username">Stella Johnson</div>
+                    </a>
+
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-5.jpg" alt="">
+                        </div>
+                        <div class="contact-username">Adrian Mohani </div>
+                    </a>
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-6.jpg" alt="">
+                        </div>
+                        <div class="contact-username"> Jonathan Madano</div>
+                    </a>
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-2.jpg" alt="">
+                            <span class="user_status"></span>
+                        </div>
+                        <div class="contact-username"> Erica Jones</div>
+                    </a>
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-1.jpg" alt="">
+                            <span class="user_status status_online"></span>
+                        </div>
+                        <div class="contact-username"> Dennis Han</div>
+                    </a>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Craete post modal -->
+    <div id="create-post-modal" class="create-post" uk-modal>
+        <div
+            class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical rounded-lg p-0 lg:w-5/12 relative shadow-2xl uk-animation-slide-bottom-small">
+
+            <div class="text-center py-4 border-b">
+                <h3 class="text-lg font-semibold"> Create Post </h3>
+                <button class="uk-modal-close-default bg-gray-100 rounded-full p-2.5 m-1 right-2" type="button" uk-close
+                    uk-tooltip="title: Close ; pos: bottom ;offset:7"></button>
+            </div>
+            <div class=" flex-1 items-start space-x-4 p-5">
+                <div class="flex flex-1 items-start space-x-4 p-5">
+                    <img id="profileImageUrl5" src="assets/images/avatars/avatar-2.jpg"
+                        class="bg-gray-200 border border-white rounded-full w-11 h-11">
+                    <div class="flex-1 pt-2">
+                        <textarea id="postTextarea"
+                            class="uk-textare text-black shadow-none focus:shadow-none text-xl font-medium resize-none"
+                            rows="10"></textarea>
+
+                    </div>
+                </div>
+                <input type="file" id="imageInputPost" style="display: none;" accept="image/*" multiple>
+                <div style="display: flex; flex-direction: column;">
+                    <div style="border:  5px solid #00000030; " class="destination">
+                        <input type="text" id="destinationId"
+                            placeholder="Destination id like.... ed6aa554-a179-428a-95c7-95b9f4ee17e0">
+
+                    </div>
+                    <a style="display: flex; justify-content: end;" href="/place">Find or Create Destination</a>
+                </div>
+                <div id="ImagePrevContainer" class="flex flex-wrap gap-2 mt-4">
+
+                </div>
+            </div>
+            <div class="bsolute bottom-0 p-4 space-x-4 w-full">
+                <div class="flex bg-gray-50 border border-purple-100 rounded-2xl p-3 shadow-sm items-center">
+                    <div class="lg:block hidden"> Add to your post </div>
+                    <div class="flex flex-1 items-center lg:justify-end justify-center space-x-2">
+
+                        <svg id="imageSelectPost"
+                            class="bg-blue-100 h-9 p-1.5 rounded-full text-blue-600 w-9 cursor-pointer" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            </path>
+                        </svg>
+
+                        <svg id="locationSelectPost"
+                            class="text-pink-600 h-9 p-1.5 rounded-full bg-pink-100 w-9 cursor-pointer" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"> </path>
+                        </svg>
+
+                        <svg itemid="fileSelectPost"
+                            class="text-pink-600 h-9 p-1.5 rounded-full bg-pink-100 w-9 cursor-pointer" id="veiw-more"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+
+                        <svg itemid="videoSelectPost"
+                            class="text-pink-600 h-9 p-1.5 rounded-full bg-pink-100 w-9 cursor-pointer" id="veiw-more"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
+                            </path>
+                        </svg>
+
+                        <svg itemid="audioSelectPost"
+                            class="text-purple-600 h-9 p-1.5 rounded-full bg-purple-100 w-9 cursor-pointer"
+                            id="veiw-more" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3">
+                            </path>
+                        </svg>
+
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center w-full justify-between p-3 border-t">
+
+                <a id="sendPostButton" href="#"
+                    class="bg-blue-600 flex h-9 items-center justify-center rounded-lg text-white px-12 font-semibold">
+                    Share </a>
+            </div>
+        </div>
+    </div>
+
+    <!--Pop Up Code-->
+    <style>
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .popup-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            max-width: 700px;
+            /* Adjust this value as needed */
+            width: 100%;
+            /* Ensures the container expands to fit content */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+
+        .close-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .popupPostsCont {
+            margin-top: 20px;
+            /* To avoid overlap with the close icon */
+            height: 90vh;
+            overflow-y: auto;
+            /* Example content height to make it scrollable */
+        }
+    </style>
+    <div style="display: none;" class="overlay" id="popup-overlay">
+        <div class="popup-container">
+
+            <div style="cursor: pointer;" class="close-icon" id="close-popup"> <span class="material-symbols-outlined">
+                    close
+                </span></div>
+            <!--  Feeds  -->
+            <div class="popupPostsCont" id="popupPostsCont">
+
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('close-popup').addEventListener('click', function () {
+            document.querySelector('.overlay').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Re-enable background scrolling
+        });
+    </script>
+
+
+
+
+    <script>
+        async function getPostDetails(postId) {
+            try {
+                const response = await fetch(`/get-post-details?id=${postId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch post details');
+                }
+
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching post details:', error);
+                return null;
+            }
+        }
+
+
+    </script>
+    <script>
+        // Function to calculate relative time ago
+        function timeAgo(date) {
+            const now = new Date();
+            const postDate = new Date(date);
+
+            // Calculate the difference in milliseconds
+            const diff = now.getTime() - postDate.getTime();
+
+            // Convert to seconds
+            const seconds = Math.floor(diff / 1000);
+
+            // Logic to calculate relative time
+            if (seconds < 60) {
+                return 'Just now';
+            } else if (seconds < 60 * 60) {
+                const minutes = Math.floor(seconds / 60);
+                return `${minutes} ${minutes > 1 ? 'minutes' : 'minute'} ago`;
+            } else if (seconds < 60 * 60 * 24) {
+                const hours = Math.floor(seconds / (60 * 60));
+                return `${hours} ${hours > 1 ? 'hours' : 'hour'} ago`;
+            } else if (seconds < 60 * 60 * 24 * 30) {
+                const days = Math.floor(seconds / (60 * 60 * 24));
+                return `${days} ${days > 1 ? 'days' : 'day'} ago`;
+            } else if (seconds < 60 * 60 * 24 * 365) {
+                const months = Math.floor(seconds / (60 * 60 * 24 * 30));
+                return `${months} ${months > 1 ? 'months' : 'month'} ago`;
+            } else {
+                const years = Math.floor(seconds / (60 * 60 * 24 * 365));
+                return `${years} ${years > 1 ? 'years' : 'year'} ago`;
+            }
+        }
+        function sendToDestination(destinationId) {
+            console.log("Destination ID:", destinationId);
+            window.open(`/places?id=${destinationId}`, '_blank');
+        }
+    </script>
+
+    <script>
+        async function popupPost(value) {
+            document.querySelector(".overlay").style.display = "block";
+            document.body.style.overflow = 'hidden';
+            const popupPostsCont = document.getElementById("popupPostsCont");
+            popupPostsCont.innerHTML = '';
+            const data = await getPostDetails(value.split(",@,")[0]);
+
+            const response = await fetch(`/get-single-destination?id=${value.split(",@,")[1]}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch destination');
+            }
+
+            const destinationData = await response.json();
+
+            // Store details in variables if needed
+            const { destinationName, description, shortdescription, destImageUrls, country, temperature, rating, nearestCity, posts } = destinationData;
+            if (data) {
+
+
+                const postContainer = document.createElement('div');
+                postContainer.className = 'card lg:mx-0 uk-animation-slide-bottom-small postCard postCardComm';
+                postContainer.setAttribute('data-id', value.split(",@,")[0]); // Add post ID
+                postContainer.setAttribute('dest-id', value.split(",@,")[1]); // Add post ID
+
+
+
+
+                let postContent = '';
+
+                if (data.postDetails.imageUrls.length === 1) {
+                    postContent = `
+<div class="card lg:mx-0 uk-animation-slide-bottom-small">
+
+    <!-- post header-->
+    <div class="flex justify-between items-center lg:p-4 p-2.5">
+        <div class="flex flex-1 items-center space-x-4">
+            <a href="#">
+                <img src="${data.profileImageUrl}" class="bg-gray-200 border border-white rounded-full w-10 h-10">
+            </a>
+            <div class="flex-1 font-semibold capitalize">
+                <a href="#" class="text-black dark:text-gray-100">${data.firstName} ${data.lastName} </a>
+                <div style="font-size: small; font-weight: 400;" class="text-gray-700 flex items-center space-x-2">
+                    ${timeAgo(data.postDetails.date)} <span> </span>
+                    <ion-icon name="people"></ion-icon>
+                </div>
+            </div>
+        </div>
+        <div>
+            <a href="#" aria-expanded="false" class=""> <i
+                    class="icon-feather-more-horizontal text-2xl hover:bg-gray-200 rounded-full p-2 transition -mr-1 dark:hover:bg-gray-700"></i>
+            </a>
+            <div class="bg-white w-56 shadow-md mx-auto p-2 mt-12 rounded-md text-gray-500 hidden text-base border border-gray-100 dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700 uk-drop uk-drop-bottom-right"
+                uk-drop="mode: click;pos: bottom-right;animation: uk-animation-slide-bottom-small"
+                style="left: 593.825px; top: -0.37501px;">
+
+                <ul class="space-y-1">
+                    <li">
+                        <a href="#"
+                            class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md dark:hover:bg-gray-800">
+                            <i class="uil-share-alt mr-1"></i> Share
+                        </a>
+                        </li>
+
+                        <li>
+                            <hr class="-mx-2 my-2 dark:border-gray-800">
+                        </li>
+
+                </ul>
+
+            </div>
+        </div>
+    </div>
+    <div class="p-5 pt-0 border-b dark:border-gray-700">${data.postDetails.text}
+    </div>
+    <div uk-lightbox="">
+        <a href="${data.postDetails.imageUrls[0].split(',@,')[1]}">
+            <img src="${data.postDetails.imageUrls[0].split(',@,')[1]}" alt="" class="max-h-96 w-full object-cover">
+        </a>
+    </div>
+
+
+    <div class="p-4 space-y-3">
+
+
+        <div class="flex space-x-4 lg:font-bold">
+
+            <a style="cursor:pointer;" onclick="addLike(this)" class="flex items-center space-x-2">
+                <div class="p-2 rounded-full  text-black lg:bg-gray-100 dark:bg-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="22"
+                        height="22" class="dark:text-gray-100">
+                        <path
+                            d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z">
+                        </path>
+                    </svg>
+                </div>
+                <div> Like</div>
+            </a>
+            <a style="cursor:pointer;" class="flex items-center space-x-2 flex-1">
+                <div class="p-2 rounded-full  text-black lg:bg-gray-100 dark:bg-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="22"
+                        height="22" class="dark:text-gray-100">
+                        <path
+                            d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z">
+                        </path>
+                    </svg>
+                </div>
+                <div> Share</div>
+            </a>
+            <div style="cursor:pointer;" onclick="sendToDestination('${value.split(" ,@,")[1]}')" class="flex">
+                <div class="w-10 h-10 rounded-full relative flex-shrink-0">
+                    <img src="${destImageUrls[0].split(',@,')[1]}" alt="" class="absolute h-full rounded-full w-full">
+                </div>
+                <div>
+                    <div
+                        class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 relative lg:ml-5 ml-2 lg:mr-12 dark:bg-gray-800 dark:text-gray-100">
+                        <p class="leading-6">${destinationName}</p>
+                        <div class="absolute w-3 h-3 top-3 -left-1 bg-gray-100 transform rotate-45 dark:bg-gray-800">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+    <div class="bg-gray-100 rounded-full m-3 relative dark:bg-gray-800 border-t">
+        <input id="comment-input" placeholder="Add your Comment.." class="bg-transparent max-h-10 shadow-none px-5">
+        <div class="-m-0.5 absolute bottom-0 flex items-center right-3 text-xl">
+            <input onclick="addComment(this)" id="add-comment-button" type="button" value="Submit">
+        </div>
+    </div>
+    <div id="commentsSection" class="border-t py-4 m-5 space-y-4 dark:border-gray-600">
+        <div class="comments-section"></div>
+        <div class="flex">
+            <div class="w-10 h-10 rounded-full relative flex-shrink-0">
+                <img src="assets/images/avatars/avatar-1.jpg" alt="" class="absolute h-full rounded-full w-full">
+            </div>
+            <div>
+                <div
+                    class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 relative lg:ml-5 ml-2 lg:mr-12  dark:bg-gray-800 dark:text-gray-100">
+                    <p class="leading-6">In ut odio libero vulputate </p>
+                    <div class="absolute w-3 h-3 top-3 -left-1 bg-gray-100 transform rotate-45 dark:bg-gray-800">
+                    </div>
+                </div>
+                <div class="text-sm flex items-center space-x-3 mt-2 ml-5">
+                    <a href="#" class="text-red-600"> <i class="uil-heart"></i> Love </a>
+
+                    <span> 3d </span>
+                </div>
+            </div>
+        </div>
+        <div class="flex">
+            <div class="w-10 h-10 rounded-full relative flex-shrink-0">
+                <img src="assets/images/avatars/avatar-1.jpg" alt="" class="absolute h-full rounded-full w-full">
+            </div>
+            <div>
+                <div
+                    class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 relative lg:ml-5 ml-2 lg:mr-12  dark:bg-gray-800 dark:text-gray-100">
+                    <p class="leading-6"> sed diam nonummy nibh euismod tincidunt ut laoreet
+                        dolore magna aliquam erat volutpat. David !<i class="uil-grin-tongue-wink-alt"></i> </p>
+                    <div class="absolute w-3 h-3 top-3 -left-1 bg-gray-100 transform rotate-45 dark:bg-gray-800">
+                    </div>
+                </div>
+                <div class="text-xs flex items-center space-x-3 mt-2 ml-5">
+                    <a href="#" class="text-red-600"> <i class="uil-heart"></i> Love </a>
+                    <a href="#"> Replay </a>
+                    <span> 3d </span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+    `;
+
+                } else if (data.postDetails.imageUrls.length > 1) {
+                    const visibleImages = data.postDetails.imageUrls.slice(0, 4); // Get first 4 images
+                    const hiddenImages = data.postDetails.imageUrls.slice(4); // Get remaining images
+
+                    const visibleImagesHtml = visibleImages.map(url => `<a href="${url.split(',@,')[1]}" class="relative"><img src="${url.split(',@,')[1]}" alt="Post Image" class="rounded-md w-full h-full"></a>`).join('');
+                    const hiddenImagesHtml = hiddenImages.map(url => `<a href="${url.split(',@,')[1]}" class="hidden"><img src="${url.split(',@,')[1]}" alt="Post Image" class="rounded-md w-full h-full"></a>`).join('');
+
+                    postContent = `
+<div class="card lg:mx-0 uk-animation-slide-bottom-small">
+
+    <!-- post header-->
+    <div class="flex justify-between items-center lg:p-4 p-2.5">
+        <div class="flex flex-1 items-center space-x-4">
+            <a href="#">
+                <img src="${data.profileImageUrl}" class="bg-gray-200 border border-white rounded-full w-10 h-10">
+            </a>
+            <div class="flex-1 font-semibold capitalize">
+                <a href="#" class="text-black dark:text-gray-100">${data.firstName} ${data.lastName}</a>
+                <div style="font-size: small; font-weight: 400;" class="text-gray-700 flex items-center space-x-2">
+                    ${timeAgo(data.postDetails.date)} <span> </span>
+                    <ion-icon name="people"></ion-icon>
+                </div>
+            </div>
+        </div>
+        <div>
+            <a href="#" aria-expanded="false"> <i
+                    class="icon-feather-more-horizontal text-2xl hover:bg-gray-200 rounded-full p-2 transition -mr-1 dark:hover:bg-gray-700"></i>
+            </a>
+            <div class="bg-white w-56 shadow-md mx-auto p-2 mt-12 rounded-md text-gray-500 hidden text-base border border-gray-100 dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700 uk-drop"
+                uk-drop="mode: click;pos: bottom-right;animation: uk-animation-slide-bottom-small">
+
+                <ul class="space-y-1">
+                    <li>
+                        <a href="#"
+                            class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md dark:hover:bg-gray-800">
+                            <i class="uil-share-alt mr-1"></i> Share
+                        </a>
+                    </li>
+
+                    <li>
+                        <hr class="-mx-2 my-2 dark:border-gray-800">
+                    </li>
+
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="p-5 pt-0 border-b dark:border-gray-700">${data.postDetails.text}
+    </div>
+
+    <div uk-lightbox="">
+        <div class="grid grid-cols-2 gap-2 px-5">
+            ${visibleImagesHtml}
+            ${hiddenImagesHtml}
+            ${hiddenImages.length > 0 ? ' + ' + hiddenImages.length + ' more' : ''}
+        </div>
+    </div>
+
+    <div class="p-4 space-y-3">
+
+
+        <div class="flex space-x-4 lg:font-bold">
+            <a onclick="addLike(this)" class="flex items-center space-x-2">
+                <div class="p-2 rounded-full  text-black lg:bg-gray-100 dark:bg-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="22"
+                        height="22" class="dark:text-gray-100">
+                        <path
+                            d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z">
+                        </path>
+                    </svg>
+                </div>
+                <div> Like</div>
+            </a>
+            <a href="#" class="flex items-center space-x-2 flex-1">
+                <div class="p-2 rounded-full  text-black lg:bg-gray-100 dark:bg-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="22"
+                        height="22" class="dark:text-gray-100">
+                        <path
+                            d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z">
+                        </path>
+                    </svg>
+                </div>
+                <div> Share</div>
+            </a>
+            <div style="cursor:pointer;" onclick="sendToDestination('${value.split(" ,@,")[1]}')" class="flex">
+                <div class="w-10 h-10 rounded-full relative flex-shrink-0">
+                    <img src="${destImageUrls[0].split(',@,')[1]}" alt="" class="absolute h-full rounded-full w-full">
+                </div>
+                <div>
+                    <div
+                        class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 relative lg:ml-5 ml-2 lg:mr-12 dark:bg-gray-800 dark:text-gray-100">
+                        <p class="leading-6">${destinationName} </p>
+                        <div class="absolute w-3 h-3 top-3 -left-1 bg-gray-100 transform rotate-45 dark:bg-gray-800">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="bg-gray-100 rounded-full m-3 relative dark:bg-gray-800 border-t">
+            <input id="comment-input" placeholder="Add your Comment.." class="bg-transparent max-h-10 shadow-none px-5">
+            <div class="-m-0.5 absolute bottom-0 flex items-center right-3 text-xl">
+                <input onclick="addComment(this)" id="add-comment-button" type="button" value="Submit">
+            </div>
+        </div>
+        <div id="commentsSection" class="border-t py-4 space-y-4 dark:border-gray-600">
+            <div class="comments-section"></div>
+            <div class="flex">
+                <div class="w-10 h-10 rounded-full relative flex-shrink-0">
+                    <img src="assets/images/avatars/avatar-1.jpg" alt="" class="absolute h-full rounded-full w-full">
+                </div>
+                <div>
+                    <div
+                        class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 relative lg:ml-5 ml-2 lg:mr-12  dark:bg-gray-800 dark:text-gray-100">
+                        <p class="leading-6">In ut odio libero vulputate </p>
+                        <div class="absolute w-3 h-3 top-3 -left-1 bg-gray-100 transform rotate-45 dark:bg-gray-800">
+                        </div>
+                    </div>
+                    <div class="text-sm flex items-center space-x-3 mt-2 ml-5">
+                        <a href="#" class="text-red-600"> <i class="uil-heart"></i> Love </a>
+
+                        <span> 3d </span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex">
+                <div class="w-10 h-10 rounded-full relative flex-shrink-0">
+                    <img src="assets/images/avatars/avatar-1.jpg" alt="" class="absolute h-full rounded-full w-full">
+                </div>
+                <div>
+                    <div
+                        class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 relative lg:ml-5 ml-2 lg:mr-12  dark:bg-gray-800 dark:text-gray-100">
+                        <p class="leading-6"> sed diam nonummy nibh euismod tincidunt ut laoreet
+                            dolore magna aliquam erat volutpat. David !<i class="uil-grin-tongue-wink-alt"></i> </p>
+                        <div class="absolute w-3 h-3 top-3 -left-1 bg-gray-100 transform rotate-45 dark:bg-gray-800">
+                        </div>
+                    </div>
+                    <div class="text-xs flex items-center space-x-3 mt-2 ml-5">
+                        <a href="#" class="text-red-600"> <i class="uil-heart"></i> Love </a>
+                        <a href="#"> Replay </a>
+                        <span> 3d </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</div>
+    `;
+                } else {
+                    postContent = `
+        <div class="no-image-post">
+            <p>${data.postDetails.text}</p>
+            <p>${new Date(data.postDetails.date).toLocaleString()}</p>
+        </div>
+    `;
+                }
+
+
+                postContainer.innerHTML = postContent;
+                popupPostsCont.innerHTML = ''; // Clear previous content
+                popupPostsCont.appendChild(postContainer);
+                totalComments();
+            }
+        }
+
+    </script>
+    <style>
+        .parentbg {
+            background-color: #f7faff00;
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            // Function to extract query parameter from URL
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[[\]]/g, '\\$&');
+                const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
+            }
+
+            // Function to set the destination ID
+            function setDestinationId(destinationId) {
+                const inputElement = document.getElementById('destinationId');
+                if (inputElement) {
+                    inputElement.value = destinationId;
+                    console.log(destinationId)
+                } else {
+                    console.error('Input element with id "destinationId" not found.');
+                }
+            }
+
+
+
+            // Example usage:
+            const destinationId = getParameterByName('id');
+            setDestinationId(destinationId);
+
+            document.getElementById('CreatePost').addEventListener('click', () => {
+                const destinationId = getParameterByName('id');
+                setDestinationId(destinationId);
+            });
+
+            if (!destinationId) {
+                console.error('Destination ID not found in URL');
+                return;
+            }
+
+            // Fetch destination details from server
+            try {
+                const response = await fetch(`/get-single-destination?id=${destinationId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch destination');
+                }
+
+                const destinationData = await response.json();
+
+                // Store details in variables if needed
+                const { destinationName, description, shortdescription, destImageUrls, country, temperature, rating, nearestCity, posts } = destinationData;
+
+
+
+                document.getElementById("titleDest").textContent = destinationName;
+                document.getElementById("aboutShortDest").textContent = shortdescription;
+                document.getElementById("aboutLongDest").innerHTML = description;
+                document.getElementById("mainheaderImgDest").src = destImageUrls[0].split(',@,')[1];
+
+                destPostsCont = document.getElementById("destPosts");
+                const postKeys = Object.keys(posts);
+                // Example function to fetch and log post details
+                async function fetchAndLogPostDetails(postKeys) {
+                    for (const key of postKeys) {
+                        console.log(`Post ID: ${key}`);
+                        const data = await getPostDetails(key);
+                        if (data) {
+
+
+                            const postContainer = document.createElement('div');
+                            postContainer.className = 'lg:mx-0 uk-animation-slide-bottom-small postCard parentbg';
+                            postContainer.setAttribute('data-id', key); // Add post ID
+                            postContainer.setAttribute('dest-id', destinationId); // Add post ID
+                            let postContent = '';
+
+                            if (data.postDetails.imageUrls.length === 1) {
+                                postContent = `
+        <div   class="card lg:mx-0 uk-animation-slide-bottom-small">
+
+<!-- post header-->
+<div class="flex justify-between items-center lg:p-4 p-2.5">
+<div class="flex flex-1 items-center space-x-4">
+<a href="#">
+<img src="${data.profileImageUrl}" class="bg-gray-200 border border-white rounded-full w-10 h-10">
+</a>
+<div class="flex-1 font-semibold capitalize">
+<a href="#" class="text-black dark:text-gray-100">${data.firstName}  ${data.lastName} </a>
+<div style="font-size: small; font-weight: 400;"  class="text-gray-700 flex items-center space-x-2"> ${timeAgo(data.postDetails.date)}  <span>  </span>
+    <ion-icon name="people"></ion-icon>
+</div>
+</div>
+</div>
+<div>
+<a href="#" aria-expanded="false" class=""> <i class="icon-feather-more-horizontal text-2xl hover:bg-gray-200 rounded-full p-2 transition -mr-1 dark:hover:bg-gray-700"></i>
+</a>
+<div class="bg-white w-56 shadow-md mx-auto p-2 mt-12 rounded-md text-gray-500 hidden text-base border border-gray-100 dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700 uk-drop uk-drop-bottom-right" uk-drop="mode: click;pos: bottom-right;animation: uk-animation-slide-bottom-small" style="left: 593.825px; top: -0.37501px;">
+
+<ul class="space-y-1">
+    <li">
+        <a href="#" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md dark:hover:bg-gray-800">
+            <i class="uil-share-alt mr-1"></i> Share
+        </a>
+    </li>
+   
+    <li>
+        <hr class="-mx-2 my-2 dark:border-gray-800">
+    </li>
+   
+</ul>
+
+</div>
+</div>
+</div>
+<div class="p-5 pt-0 border-b dark:border-gray-700">${data.postDetails.text}
+</div>
+<div uk-lightbox="">
+<a href="${data.postDetails.imageUrls[0].split(',@,')[1]}">
+<img src="${data.postDetails.imageUrls[0].split(',@,')[1]}" alt="" class="max-h-96 w-full object-cover">
+</a>
+</div>
+
+
+<div class="p-4 space-y-3">
+
+
+<div class="flex space-x-4 lg:font-bold">
+                                   
+                                  <a onclick="addLike(this)" class="flex items-center space-x-2">
+                                        <div class="p-2 rounded-full  text-black lg:bg-gray-100 dark:bg-gray-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="22" height="22" class="dark:text-gray-100">
+                                                <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"></path>
+                                            </svg>
+                                        </div>
+                                        <div> Like</div>
+                                    </a>
+                                    <a href="#" class="flex items-center space-x-2 flex-1">
+                                        <div class="p-2 rounded-full  text-black lg:bg-gray-100 dark:bg-gray-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="22" height="22" class="dark:text-gray-100">
+                                                <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                        <div> Share</div>
+                                    </a>
+                                    <div style="cursor:pointer;" onclick="sendToDestination('${destinationId}')" class="flex">
+    <div class="w-10 h-10 rounded-full relative flex-shrink-0">
+        <img src="${destImageUrls[0].split(',@,')[1]}" alt="" class="absolute h-full rounded-full w-full">
+    </div>
+    <div>
+        <div class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 relative lg:ml-5 ml-2 lg:mr-12 dark:bg-gray-800 dark:text-gray-100">
+            <p class="leading-6">${destinationName}</p>
+            <div class="absolute w-3 h-3 top-3 -left-1 bg-gray-100 transform rotate-45 dark:bg-gray-800"></div>
+        </div>
+        
+    </div>
+</div>
+                                </div>
+
+
+<div style="display:flex; justify-content: space-between;">
+<p style="cursor:pointer; width:fit-content;" class="comments-link"  onclick="popupPost('${key + ",@," + destinationId}')">View more
+Comments</p>
+
+</div>
+
+
+
+</div>
+
+</div>
+<div class="comments-section"></div>
+</div>
+    `;
+                            } else if (data.postDetails.imageUrls.length > 1) {
+                                const visibleImages = data.postDetails.imageUrls.slice(0, 4); // Get first 4 images
+                                const hiddenImages = data.postDetails.imageUrls.slice(4); // Get remaining images
+
+                                const visibleImagesHtml = visibleImages.map(url => `<a href="${url.split(',@,')[1]}" class="relative"><img src="${url.split(',@,')[1]}" alt="Post Image" class="rounded-md w-full h-full"></a>`).join('');
+                                const hiddenImagesHtml = hiddenImages.map(url => `<a href="${url.split(',@,')[1]}" class="hidden"><img src="${url.split(',@,')[1]}" alt="Post Image" class="rounded-md w-full h-full"></a>`).join('');
+
+                                postContent = `
+       <div class="card lg:mx-0 uk-animation-slide-bottom-small">
+
+<!-- post header-->
+<div class="flex justify-between items-center lg:p-4 p-2.5">
+<div class="flex flex-1 items-center space-x-4">
+<a href="#">
+    <img src="${data.profileImageUrl}" class="bg-gray-200 border border-white rounded-full w-10 h-10">
+</a>
+<div class="flex-1 font-semibold capitalize">
+    <a href="#" class="text-black dark:text-gray-100">${data.firstName} ${data.lastName}</a>
+    <div style="font-size: small; font-weight: 400;" class="text-gray-700 flex items-center space-x-2"> ${timeAgo(data.postDetails.date)} <span>  </span>
+        <ion-icon name="people"></ion-icon>
+    </div>
+</div>
+</div>
+<div>
+<a href="#" aria-expanded="false"> <i class="icon-feather-more-horizontal text-2xl hover:bg-gray-200 rounded-full p-2 transition -mr-1 dark:hover:bg-gray-700"></i>
+</a>
+<div class="bg-white w-56 shadow-md mx-auto p-2 mt-12 rounded-md text-gray-500 hidden text-base border border-gray-100 dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700 uk-drop" uk-drop="mode: click;pos: bottom-right;animation: uk-animation-slide-bottom-small">
+
+    <ul class="space-y-1">
+        <li>
+            <a href="#" class="flex items-center px-3 py-2 hover:bg-gray-200 hover:text-gray-800 rounded-md dark:hover:bg-gray-800">
+                <i class="uil-share-alt mr-1"></i> Share
+            </a>
+        </li>
+     
+        <li>
+            <hr class="-mx-2 my-2 dark:border-gray-800">
+        </li>
+       
+    </ul>
+
+</div>
+</div>
+</div>
+
+<div class="p-5 pt-0 border-b dark:border-gray-700">${data.postDetails.text}
+</div>
+
+<div uk-lightbox="">
+<div class="grid grid-cols-2 gap-2 px-5">
+${visibleImagesHtml}
+${hiddenImagesHtml}
+${hiddenImages.length > 0 ? ' + ' + hiddenImages.length + ' more' : ''}
+</div>
+</div>
+
+<div class="p-4 space-y-3">
+
+
+<div class="flex space-x-4 lg:font-bold">
+                                  <a onclick="addLike(this)"  class="flex items-center space-x-2">
+                                        <div  class="p-2 rounded-full  text-black lg:bg-gray-100 dark:bg-gray-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="22" height="22" class="dark:text-gray-100">
+                                                <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"></path>
+                                            </svg>
+                                        </div>
+                                        <div> Like</div>
+                                    </a>
+                                    <a href="#" class="flex items-center space-x-2 flex-1">
+                                        <div class="p-2 rounded-full  text-black lg:bg-gray-100 dark:bg-gray-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="22" height="22" class="dark:text-gray-100">
+                                                <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                        <div> Share</div>
+                                    </a>
+                                    <div style="cursor:pointer;" onclick="sendToDestination('${destinationId}')" class="flex">
+    <div class="w-10 h-10 rounded-full relative flex-shrink-0">
+        <img src="${destImageUrls[0].split(',@,')[1]}" alt="" class="absolute h-full rounded-full w-full">
+    </div>
+    <div>
+        <div class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 relative lg:ml-5 ml-2 lg:mr-12 dark:bg-gray-800 dark:text-gray-100">
+            <p class="leading-6">${destinationName}  </p>
+            <div class="absolute w-3 h-3 top-3 -left-1 bg-gray-100 transform rotate-45 dark:bg-gray-800"></div>
+        </div>
+        
+    </div>
+</div>
+                                </div>
+
+<div style="display:flex; justify-content: space-between;">
+<p style="cursor:pointer; width:fit-content;" class="comments-link"  onclick="popupPost('${key + ",@," + destinationId}')">View more
+Comments</p>
+
+</div>
+
+
+
+</div>
+
+</div>
+<div cla
+    `;
+                            } else {
+                                postContent = `
+        <div class="no-image-post">
+            <p>${data.postDetails.text}</p>
+            <p>${new Date(data.postDetails.date).toLocaleString()}</p>
+        </div>
+    `;
+                            }
+
+
+                            postContainer.innerHTML = postContent;
+                            destPostsCont.appendChild(postContainer);
+                        }
+                    }
+                }
+
+                fetchAndLogPostDetails(postKeys);
+
+                // Set onclick function for the share button
+                document.getElementById("shareDest").onclick = async () => {
+                    // Logic to handle the click event
+                    console.log("Destination ID to share:", destinationId);
+                    const urlToCopy = `${window.location.origin}/places?id=${destinationId}`;
+
+                    try {
+                        await navigator.clipboard.writeText(urlToCopy);
+                        console.log('Link copied to clipboard:', urlToCopy);
+                        alert('Link copied to clipboard!');
+                    } catch (err) {
+                        console.error('Failed to copy link:', err);
+                        alert('Failed to copy link. Please try again.');
+                    }
+                };
+
+            } catch (error) {
+                console.error('Error fetching destination details:', error);
+            }
+        });
+    </script>
+    <script>
+        async function addLike(link) {
+            const postContainer = link.closest('.postCard');
+            if (!postContainer) {
+                console.error('Post container not found');
+                return;
+            }
+
+            const postId = postContainer.getAttribute('data-id');
+            if (!postId) {
+                console.error('Post ID not found');
+                return;
+            }
+
+            try {
+                const response = await fetch('/add-like', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ postId })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Like added successfully.');
+                } else {
+                    alert(result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while adding like: ' + error.message);
+            }
+        }
+    </script>
+
+
+
+
+    <script>
+        // Update the existing function or create a new one to handle total comments and comments retrieval
+        async function totalComments(link) {
+            const postContainer = document.querySelector('.postCardComm');
+            if (!postContainer) {
+                console.error('Post container not found');
+                return;
+            }
+
+            const postId = postContainer.getAttribute('data-id');
+            if (!postId) {
+                console.error('Post ID not found');
+                return;
+            }
+
+            try {
+                const response = await fetch('/total-comments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ postId })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    const commentsContainer = document.querySelector('#commentsSection');
+                    if (!commentsContainer) {
+                        console.error('Comments container not found');
+                        return;
+                    }
+
+                    // Clear existing comments if any
+                    commentsContainer.innerHTML = '<div class="comments-section"></div>';
+
+                    // Sort comments by timestamp (latest first)
+                    result.comments.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                    // Iterate through comments and create HTML elements
+                    result.comments.forEach(comment => {
+                        const commentElement = document.createElement('div');
+                        commentElement.classList.add('border-t', 'py-4', 'space-y-4', 'dark:border-gray-600');
+                        commentElement.innerHTML = `
+                        <div class="flex">
+                            <div class="w-10 h-10 rounded-full relative flex-shrink-0">
+                                <img src="https://cdn-icons-png.flaticon.com/512/4042/4042356.png" alt="" class="absolute h-full rounded-full w-full">
+                            </div>
+                            <div>
+                                <div class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 relative lg:ml-5 ml-2 lg:mr-12 dark:bg-gray-800 dark:text-gray-100">
+                                    <p class="leading-6">${comment.text}</p>
+                                    <div class="absolute w-3 h-3 top-3 -left-1 bg-gray-100 transform rotate-45 dark:bg-gray-800"></div>
+                                </div>
+                                <div class="text-sm flex items-center space-x-3 mt-2 ml-5">
+                                    <a href="#" class="text-red-600"><i class="uil-heart"></i> Love</a>
+                                    <span>${timeAgo(comment.timestamp)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                        // Append the comment element to the comments container
+                        commentsContainer.appendChild(commentElement);
+                    });
+
+                    // Display the comments popup
+                    document.querySelector('.overlay').style.display = 'block';
+                    document.body.classList.add('popup-open'); // Disable scrolling
+                } else {
+                    console.error('Error fetching total comments:', result.message);
+                }
+            } catch (error) {
+                console.error('Error fetching total comments:', error);
+                alert('An error occurred while fetching total comments.');
+            }
+        }
+
+    </script>
+
+    <script>
+        async function addComment(button) {
+
+
+            const postContainer = button.closest('.postCard');
+
+            if (!postContainer) {
+                console.error('Post container not found');
+                return;
+            }
+
+            const postId = postContainer.getAttribute('data-id');
+
+            const commentInput = postContainer.querySelector('#comment-input');
+
+            if (!commentInput) {
+                console.error('Comment input not found');
+                return;
+            }
+
+            const comment = commentInput.value.trim();
+
+            if (!comment) {
+                alert('Please enter a comment.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/add-comment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ postId, comment })
+                });
+
+                const result = await response.json();
+                console.log('Response from server:', result);
+
+                if (result.success) {
+                    // Optionally clear the comment input field
+                    commentInput.value = '';
+
+                    // Append the new comment to the comments section
+                    const commentsSection = postContainer.querySelector('.comments-section');
+
+                    if (!commentsSection) {
+                        console.error('Comments section not found');
+                        return;
+                    }
+
+                    // Create the comment HTML structure
+                    const newComment = document.createElement('div');
+                    newComment.classList.add('flex');
+
+                    newComment.innerHTML = `
+                <div class="w-10 h-10 rounded-full relative flex-shrink-0">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4042/4042356.png" alt="" class="absolute h-full rounded-full w-full">
+                </div>
+                <div>
+                    <div class="text-gray-700 py-2 px-3 rounded-md bg-gray-100 relative lg:ml-5 ml-2 lg:mr-12 dark:bg-gray-800 dark:text-gray-100">
+                        <p class="leading-6">${comment} </p>
+                        <div class="absolute w-3 h-3 top-3 -left-1 bg-gray-100 transform rotate-45 dark:bg-gray-800"></div>
+                    </div>
+                    <div class="text-sm flex items-center space-x-3 mt-2 ml-5">
+                        <a href="#" class="text-red-600"><i class="uil-heart"></i> Love</a>
+                        <span>Just now</span> <!-- Replace with dynamic time calculation if needed -->
+                    </div>
+                </div>
+            `;
+
+                    // Append the new comment element to the comments section
+                    commentsSection.appendChild(newComment);
+                }
+
+                else {
+                    alert('Error adding comment: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while adding the comment.');
+            }
+        }
+
+    </script>
+    <script>
+        document.getElementById('imageSelectPost').addEventListener('click', () => {
+            document.getElementById('imageInputPost').click();
+        });
+
+        document.getElementById('imageInputPost').addEventListener('change', (event) => {
+            const files = event.target.files;
+            const ImagePrevContainer = document.getElementById('ImagePrevContainer');
+            //ImagePrevContainer.innerHTML = ''; // Clear previous previews
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    const imagePreviewContainer = document.createElement('div');
+                    imagePreviewContainer.style.position = 'relative';
+                    imagePreviewContainer.style.display = 'inline-block';
+                    imagePreviewContainer.style.margin = '5px';
+
+                    const closeIcon = document.createElement('span');
+                    closeIcon.innerHTML = '&times;';
+                    closeIcon.style.position = 'absolute';
+                    closeIcon.style.top = '5px';
+                    closeIcon.style.right = '5px';
+                    closeIcon.style.cursor = 'pointer';
+                    closeIcon.style.color = 'red';
+                    closeIcon.style.fontSize = '20px';
+                    closeIcon.className = 'close-icon';
+
+                    const imagePreview = document.createElement('img');
+                    imagePreview.src = e.target.result;
+                    imagePreview.alt = 'Image Preview';
+                    imagePreview.style.maxWidth = '100px';
+                    imagePreview.className = 'rounded-lg';
+
+                    closeIcon.addEventListener('click', () => {
+                        ImagePrevContainer.removeChild(imagePreviewContainer);
+                    });
+
+                    imagePreviewContainer.appendChild(imagePreview);
+                    imagePreviewContainer.appendChild(closeIcon);
+                    ImagePrevContainer.appendChild(imagePreviewContainer);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('sendPostButton').addEventListener('click', async (event) => {
+            event.preventDefault();
+            const loader = document.querySelector(".loader");
+            const postText = document.getElementById('postTextarea').value;
+            const destinationId = document.getElementById('destinationId').value;
+            const imageInput = document.getElementById('imageInputPost');
+            const formData = new FormData();
+
+            loader.style.display = 'flex';
+
+            formData.append('postText', postText);
+            formData.append('destinationId', destinationId);
+            for (const file of imageInput.files) {
+                formData.append('postImages', file);
+            }
+
+            try {
+                const response = await fetch('/create-post', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                });
+
+                if (response.ok) {
+                    console.log('Post created successfully.');
+                    document.getElementById('postTextarea').value = '';
+                    document.getElementById('destinationId').value = '';
+                    document.getElementById('ImagePrevContainer').innerHTML = ''; // Clear previews
+                    imageInput.value = ''; // Clear selected files
+                    loader.style.display = 'none';
+                } else {
+                    console.error('Error creating post:', response.statusText);
+                    loader.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                loader.style.display = 'none';
+            }
+        });
+    </script>
+
+    <script>
+        (function (window, document, undefined) {
+            'use strict';
+            if (!('localStorage' in window)) return;
+            var nightMode = localStorage.getItem('gmtNightMode');
+            if (nightMode === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+        })(window, document);
+
+        (function (window, document, undefined) {
+            'use strict';
+            if (!('localStorage' in window)) return;
+
+            var nightModeToggle = document.querySelector('#night-mode');
+            if (!nightModeToggle) return;
+
+            nightModeToggle.addEventListener('click', function (event) {
+                event.preventDefault();
+                document.documentElement.classList.toggle('dark');
+                if (document.documentElement.classList.contains('dark')) {
+                    localStorage.setItem('gmtNightMode', 'true');
+                } else {
+                    localStorage.setItem('gmtNightMode', 'false');
+                }
+            }, false);
+        })(window, document);
+    </script>
+    <script>
+        async function fetchAndDisplayUsername() {
+            try {
+                const response = await fetch('/user-details', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin' // Include cookies in the request
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    document.getElementById('firstName-display').textContent = `${userData.firstName}`;
+                    document.getElementById('username-display').textContent = `@${userData.username}`;
+                    document.getElementById('profileImageUrl').src = userData.profileImageUrl;
+                    document.getElementById('profileImageUrl2').src = userData.profileImageUrl;
+                    document.getElementById('profileImageUrl5').src = userData.profileImageUrl;
+                    document.getElementById('postTextarea').placeholder = `What's in Your Mind ? ${userData.firstName}!`;;
+                } else {
+                    console.error('Error fetching user data:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+            }
+        }
+
+        window.onload = fetchAndDisplayUsername;
+    </script>
+
+
+
+    <script src="assets/js/script1.js"></script>
+
+    <!-- Javascript
+    ================================================== -->
+    <script src="../../code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="assets/js/tippy.all.min.js"></script>
+    <script src="assets/js/uikit.js"></script>
+    <script src="assets/js/simplebar.js"></script>
+    <script src="assets/js/custom.js"></script>
+    <script src="assets/js/bootstrap-select.min.js"></script>
+    <script src="../../unpkg.com/ionicons%405.2.3/dist/ionicons.js"></script>
+
+</body>
+
+<!-- Mirrored from demo.foxthemes.net/socialite/feed.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 20 Jul 2023 17:41:40 GMT -->
+
+</html>

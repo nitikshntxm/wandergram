@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Mirrored from demo.foxthemes.net/socialite/feed.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 20 Jul 2023 17:40:27 GMT -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Favicon -->
+    <link href="assets/images/favicon.png" rel="icon" type="image/png">
+
+    <!-- Basic Page Needs
+        ================================================== -->
+    <title>Places</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Socialite is - Professional A unique and beautiful collection of UI elements">
+
+    <!-- icons
+    ================================================== -->
+    <link rel="stylesheet" href="assets/css/icons.css">
+
+    <!-- CSS 
+    ================================================== -->
+    <link rel="stylesheet" href="assets/css/uikit.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="assets/css/tailwind.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://codewithsadee.github.io/tourly/assets/css/style.css">
+
+</head>
+
+<body>
+
+
+    <div id="wrapper">
+
+       <!-- Header -->
+       <header>
+        <div class="header_wrap">
+            <div class="header_inner mcontainer">
+                <div class="left_side">
+
+
+
+                    <div id="logo">
+                        <a href="/feed">
+                            <img src="assets/images/logo.png" alt="">
+                            <img src="assets/images/logo-mobile.png" class="logo_mobile" alt="">
+                        </a>
+                    </div>
+                </div>
+
+                <!-- search icon for mobile -->
+                <div class="header-search-icon" uk-toggle="target: #wrapper ; cls: show-searchbox"> </div>
+                <div class="header_search"><i class="uil-search-alt"></i>
+                    <input id="headerSearch" value="" type="text" class="form-control"
+                        placeholder="Search for Friends , Videos and more.." autocomplete="off">
+                    <div uk-drop="mode: click" class="header_search_dropdown">
+
+                        <h4 class="search_title"> Results </h4>
+                        <ul id="searchList">
+
+                        </ul>
+
+                    </div>
+                </div>
+
+
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                        const headerSearch = document.getElementById('headerSearch');
+                        const searchList = document.getElementById('searchList');
+
+                        headerSearch.addEventListener('input', async () => {
+                            const searchText = headerSearch.value.trim();
+
+                            if (searchText.length < 2) {
+                                searchList.innerHTML = ''; // Clear the list if less than 2 characters
+                                return;
+                            }
+
+                            try {
+                                const response = await fetch('/search', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ searchText })
+                                });
+
+                                if (!response.ok) {
+                                    throw new Error('Failed to fetch search results');
+                                }
+
+                                const results = await response.json();
+                                displaySearchResults(results);
+                            } catch (error) {
+                                console.error('Error fetching search results:', error);
+                            }
+                        });
+
+                        function displaySearchResults(results) {
+                            searchList.innerHTML = ''; // Clear previous results
+
+                            results.forEach(result => {
+                                const listItem = document.createElement('li');
+                                let listItemContent = '';
+
+                                if (result.type === 'destination') {
+                                    listItemContent = `
+                    <a href="/places?id=${result.data.destinationId}">
+                        <img src="${result.data.destImageUrls[0].split(',@,')[1]}" alt="${result.data.destinationName}" class="list-avatar">
+                        <div class="list-name">${result.data.destinationName}</div>
+                    </a>
+                `;
+                                } else if (result.type === 'user') {
+                                    listItemContent = `
+                    <a href="#">
+                        <img src="${result.data.profileImageUrl}" alt="User" class="list-avatar">
+                        <div class="list-name">${result.data.username}</div>
+                    </a>
+                `;
+                                }
+
+                                listItem.innerHTML = listItemContent;
+                                searchList.appendChild(listItem);
+                            });
+                        }
+                    });
+                </script>
+                <div class="right_side">
+
+                    <div class="header_widgets">
+
+
+
+                        <a href="#" class="is_icon" uk-tooltip="title: Notifications">
+                            <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z">
+                                </path>
+                            </svg>
+                            <span>0</span>
+                        </a>
+                        <div uk-drop="mode: click" class="header_dropdown">
+                            <div class="dropdown_scrollbar" data-simplebar>
+                                <div class="drop_headline">
+                                    <h4>Notifications </h4>
+                                    <div class="btn_action">
+                                        <a href="#" data-tippy-placement="left" title="Notifications">
+                                            <ion-icon name="settings-outline"></ion-icon>
+                                        </a>
+                                        <a href="#" data-tippy-placement="left" title="Mark as read all">
+                                            <ion-icon name="checkbox-outline"></ion-icon>
+                                        </a>
+                                    </div>
+                                </div>
+                                <ul>
+                                    <li>
+                                        <a href="#">
+                                            <div class="drop_avatar">
+                                                <!-- <img src="assets/images/avatars/avatar-1.jpg" alt="">-->
+                                            </div>
+                                            <!-- <span class="drop_icon bg-gradient-primary">
+                                                <i class="icon-feather-thumbs-up"></i>
+                                            </span>-->
+                                            <div class="drop_text">
+                                                <p>
+                                                    <strong> </strong>
+                                                    <span class="text-link"> </span>
+                                                </p>
+                                                <time> </time>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+
+
+
+                        <a href="#">
+                            <img id="profileImageUrl" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                                class="is_avatar" alt="">
+                        </a>
+                        <div uk-drop="mode: click;offset:5" class="header_dropdown profile_dropdown">
+
+                            <a href="/profile" class="user">
+                                <div class="user_avatar">
+                                    <img id="profileImageUrl2"
+                                        src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="">
+                                </div>
+                                <div class="user_name">
+                                    <div id="firstName-display"> Stella Johnson </div>
+                                    <span id="username-display"> @johnson</span>
+                                </div>
+                            </a>
+
+
+
+
+
+
+
+
+
+
+
+                            <hr>
+                            <a href="pages-upgrade.html" class="is-link">
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                Upgrade To Premium </span>
+                            </a>
+                            <hr>
+                            <a href="/myaccount">
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                My Account
+                            </a>
+                            <a href="groups.html">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                Manage Pages
+                            </a>
+                            <a href="pages-setting.html">
+                                <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
+                                    <path fill-rule="evenodd"
+                                        d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                My Billing
+                            </a>
+                            <a href="#" id="night-mode" class="btn-night-mode">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                                </svg>
+                                Night mode
+                                <span class="btn-night-mode-switch">
+                                    <span class="uk-switch-button"></span>
+                                </span>
+                            </a>
+                            <a href="landing.html">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                                    </path>
+                                </svg>
+                                Log Out
+                            </a>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+
+        <!-- Main Contents -->
+        <div class="main_content">
+            <div class="mcontainer">
+
+                <a style=" right: 20px;" href="#offcanvas-create" uk-toggle=""
+                    class="flex items-center justify-center h-8 lg:px-3 px-2 rounded-md bg-blue-600 text-white space-x-1 absolute right-0 z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="md:block hidden"> Create </span>
+                </a>
+
+
+                <section class="popular" id="destination">
+                    <div class="container">
+
+                        <p class="section-subtitle">Uncover place</p>
+
+                        <h2 class="h2 section-title">Popular destination</h2>
+
+                        <p class="section-text">
+                            Fusce hic augue velit wisi quibusdam pariatur, iusto primis, nec nemo, rutrum. Vestibulum
+                            cumque laudantium.
+                            Sit ornare
+                            mollitia tenetur, aptent.
+                        </p>
+
+                        <ul class="popular-list">
+
+
+                        </ul>
+
+                        <button style="display: none;" class="btn btn-primary">More destintion</button>
+
+                    </div>
+                </section>
+                <script>
+                    document.addEventListener("DOMContentLoaded", async () => {
+                        try {
+                            const response = await fetch('/get-destinations');
+                            if (!response.ok) {
+                                throw new Error('Failed to fetch destinations');
+                            }
+
+                            const destinations = await response.json();
+                            const popularList = document.querySelector('.popular-list');
+
+                            destinations.forEach(destination => {
+                                const listItem = document.createElement('li');
+                                listItem.innerHTML = `
+                                    <div style="cursor:pointer;" onclick=sendTo("${destination.destinationId}") class="popular-card">
+                                        <figure class="card-img">
+                                            <img src="${destination.destImageUrls[0].split(',@,')[1]}" alt="${destination.name}" loading="lazy">
+                                        </figure>
+                                        <div style="background-color: hsl(0deg 0% 100% / 59%);" class="card-content">
+                                            <p class="card-subtitle">
+                                                <a href="#">${destination.country}</a>
+                                            </p>
+                                            <h3 class="h3 card-title">
+                                                <a style="color: black;" href="#">${destination.destinationName}</a>
+                                            </h3>
+                                            <p style="font-size: smaller; line-height: 17px;" class="card-text">
+                                                ${destination.shortdescription}
+                                            </p>
+                                        </div>
+                                    </div>
+                                `;
+                                popularList.appendChild(listItem);
+                            });
+                        } catch (error) {
+                            console.error('Error fetching destinations:', error);
+                        }
+                    });
+                    function sendTo(destinationId) {
+                        console.log("Destination ID:", destinationId);
+                        window.open(`/places?id=${destinationId}`, '_blank');
+                    }
+                </script>
+
+
+            </div>
+        </div>
+
+    </div>
+
+    <style>
+        .preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .preview-container div {
+            position: relative;
+        }
+
+        .preview-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .close-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 5px;
+        }
+    </style>
+
+
+
+
+
+    <div id="offcanvas-create" uk-offcanvas="flip: true; overlay: true" class="uk-offcanvas" style="z-index: 9999;">
+        <div class="uk-offcanvas-bar lg:w-4/12 w-full dark:bg-gray-700 dark:text-gray-300 p-0 bg-white shadow-2xl">
+
+            <button class="uk-offcanvas-close absolute uk-icon uk-close" type="button" uk-close="">
+                <svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"
+                    data-svg="close-icon">
+                    <line fill="none" stroke="#000" stroke-width="1.1" x1="1" y1="1" x2="13" y2="13"></line>
+                    <line fill="none" stroke="#000" stroke-width="1.1" x1="13" y1="1" x2="1" y2="13"></line>
+                </svg>
+            </button>
+
+            <div class="-mb-1 border-b font-semibold px-5 py-5 text-lg">
+                <h4>Add new Destination</h4>
+            </div>
+
+            <div class="p-6 space-y-3 flex-1">
+                <div>
+                    <label>Destination Name</label>
+                    <input type="text" class="with-border" id="destinationName" placeholder="Niagara Falls...">
+                </div>
+                <div>
+                    <label>Short Description</label>
+                    <textarea name="shortdescription" rows="3" class="with-border w-full p-4" id="shortdescription"
+                        placeholder="Short Desciption Here....."></textarea>
+                </div>
+                <div>
+                    <label>Description</label>
+                    <textarea name="description" rows="3" class="with-border w-full p-4" id="description"
+                        placeholder="Please describe your Destination and share your experience..."></textarea>
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="col-span-2">
+                        <label>Category</label>
+                        <select name="category" id="category" class="with-border">
+                            <option value="mountains">Mountains</option>
+                            <option value="pyramids">Pyramids</option>
+                            <option value="rivers">Rivers</option>
+                            <option value="beaches">Beaches</option>
+                            <option value="lakes">Lakes</option>
+                            <option value="forests">Forests</option>
+                            <option value="deserts">Deserts</option>
+                            <option value="waterfalls">Waterfalls</option>
+                            <option value="caves">Caves</option>
+                            <option value="islands">Islands</option>
+                            <option value="national-parks">National Parks</option>
+                            <option value="historical-sites">Historical Sites</option>
+                            <option value="cultural-heritage-sites">Cultural Heritage Sites</option>
+                            <option value="wildlife-sanctuaries">Wildlife Sanctuaries</option>
+                            <option value="urban-landmarks">Urban Landmarks</option>
+                            <option value="gardens-botanical-parks">Gardens and Botanical Parks</option>
+                            <option value="hot-springs">Hot Springs</option>
+                            <option value="famous-bridges">Famous Bridges</option>
+                            <option value="museums">Museums</option>
+                            <option value="zoos-aquariums">Zoos and Aquariums</option>
+                            <option value="adventure-parks">Adventure Parks</option>
+                            <option value="resorts">Resorts</option>
+                            <option value="temples-monasteries">Temples and Monasteries</option>
+                            <option value="churches-cathedrals">Churches and Cathedrals</option>
+                            <option value="mosques">Mosques</option>
+                            <option value="palaces">Palaces</option>
+                            <option value="castles">Castles</option>
+                            <option value="volcanoes">Volcanoes</option>
+                            <option value="glaciers">Glaciers</option>
+                            <option value="canyons">Canyons</option>
+                            <option value="bridges">Bridges</option>
+                            <option value="buildings">Buildings</option>
+                            <option value="city">City</option>
+                            <option value="town">Town</option>
+                            <option value="other">Other</option>
+                        </select>
+
+                    </div>
+
+                    <div>
+                        <label>Temperature</label>
+                        <input placeholder="25" type="number" class="with-border w-full" id="temperature">
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label>Rating</label>
+                        <input placeholder="Out of 10" type="number" class="with-border w-full" id="rating">
+                    </div>
+                    <div class="col-span-2">
+                        <label>Nearest City/Town</label>
+                        <input placeholder="Los Angeles..." type="text" class="with-border w-full" id="nearestCity">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label>State</label>
+                        <input placeholder="California..." type="text" class="with-border w-full" id="state">
+                    </div>
+                    <div>
+                        <label>Country</label>
+                        <input placeholder="USA" type="text" class="with-border w-full" id="country">
+                    </div>
+                </div>
+
+                <div class="preview-container"></div>
+                <div uk-form-custom="" class="w-full py-3 uk-form-custom">
+                    <div
+                        class="bg-gray-100 border-2 border-dashed flex flex-col h-32 items-center justify-center relative w-full rounded-lg dark:bg-gray-800 dark:border-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-12">
+                            <path
+                                d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z">
+                            </path>
+                            <path d="M9 13h2v5a1 1 0 11-2 0v-5z"></path>
+                        </svg>
+                    </div>
+                    <input type="file" accept="image/*" id="fileInput" multiple>
+                </div>
+            </div>
+            <div class="p-5">
+                <button type="button" class="button w-full" id="createBtn">
+                    Create Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function (event) {
+            const files = event.target.files;
+            const previewContainer = document.querySelector('.preview-container');
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+
+                // Create a FileReader to read the file
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    // Create a new image element
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+
+                    // Create a container for the image and the close icon
+                    const imgContainer = document.createElement('div');
+                    imgContainer.style.position = 'relative';
+                    imgContainer.appendChild(img);
+
+                    // Create the close icon
+                    const closeIcon = document.createElement('span');
+                    closeIcon.textContent = '×';
+                    closeIcon.classList.add('close-icon');
+                    closeIcon.onclick = function () {
+                        previewContainer.removeChild(imgContainer);
+                    };
+
+                    // Append the close icon to the container
+                    imgContainer.appendChild(closeIcon);
+
+                    // Append the image container to the preview container
+                    previewContainer.appendChild(imgContainer);
+                };
+
+                // Read the file as a Data URL
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('createBtn').addEventListener('click', async function () {
+            const formData = new FormData();
+            formData.append('destinationName', document.getElementById('destinationName').value);
+            formData.append('shortdescription', document.getElementById('shortdescription').value);
+            formData.append('description', document.getElementById('description').value);
+            formData.append('category', document.getElementById('category').value);
+            formData.append('temperature', document.getElementById('temperature').value);
+            formData.append('rating', document.getElementById('rating').value);
+            formData.append('nearestCity', document.getElementById('nearestCity').value);
+            formData.append('state', document.getElementById('state').value);
+            formData.append('country', document.getElementById('country').value);
+
+            const files = document.getElementById('fileInput').files;
+            for (let i = 0; i < files.length; i++) {
+                formData.append('images', files[i]);
+            }
+
+            try {
+                const response = await fetch('/add-destination', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                console.log(result); // Add this line to debug
+
+                if (result.success) {
+
+                    alert('Destination added successfully!');
+                    // Optionally, you can reset the form or redirect the user
+                } else {
+                    alert('Failed to add destination. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error); // Add this line to debug
+                alert('Failed to add destination. Please try again.');
+            }
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+
+    <!-- open chat box -->
+    <div uk-toggle="target: #offcanvas-chat" class="start-chat">
+        <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+        </svg>
+    </div>
+
+    <div id="offcanvas-chat" uk-offcanvas="flip: true; overlay: true">
+        <div class="uk-offcanvas-bar bg-white p-0 w-full lg:w-80 shadow-2xl">
+
+
+            <div class="relative pt-5 px-4">
+
+                <h3 class="text-2xl font-bold mb-2"> Chats </h3>
+
+                <div class="absolute right-3 top-4 flex items-center space-x-2">
+
+                    <button class="uk-offcanvas-close  px-2 -mt-1 relative rounded-full inset-0 lg:hidden blcok"
+                        type="button" uk-close></button>
+
+                    <a href="#" uk-toggle="target: #search;animation: uk-animation-slide-top-small">
+                        <ion-icon name="search" class="text-xl hover:bg-gray-100 p-1 rounded-full"></ion-icon>
+                    </a>
+                    <a href="#">
+                        <ion-icon name="settings-outline" class="text-xl hover:bg-gray-100 p-1 rounded-full"></ion-icon>
+                    </a>
+                    <a href="#">
+                        <ion-icon name="ellipsis-vertical"
+                            class="text-xl hover:bg-gray-100 p-1 rounded-full"></ion-icon>
+                    </a>
+                    <div class="bg-white w-56 shadow-md mx-auto p-2 mt-12 rounded-md text-gray-500 hidden border border-gray-100 dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700"
+                        uk-drop="mode: click;pos: bottom-right;animation: uk-animation-slide-bottom-small; offset:5">
+                        <ul class="space-y-1">
+                            <li>
+                                <a href="#"
+                                    class="flex items-center px-3 py-2 hover:bg-gray-100 hover:text-gray-800 rounded-md dark:hover:bg-gray-800">
+                                    <ion-icon name="checkbox-outline" class="pr-2 text-xl"></ion-icon> Mark all as read
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="flex items-center px-3 py-2 hover:bg-gray-100 hover:text-gray-800 rounded-md dark:hover:bg-gray-800">
+                                    <ion-icon name="settings-outline" class="pr-2 text-xl"></ion-icon> Chat setting
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="flex items-center px-3 py-2 hover:bg-gray-100 hover:text-gray-800 rounded-md dark:hover:bg-gray-800">
+                                    <ion-icon name="notifications-off-outline" class="pr-2 text-lg"></ion-icon> Disable
+                                    notifications
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="flex items-center px-3 py-2 hover:bg-gray-100 hover:text-gray-800 rounded-md dark:hover:bg-gray-800">
+                                    <ion-icon name="star-outline" class="pr-2 text-xl"></ion-icon> Create a group chat
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+            <div class="absolute bg-white z-10 w-full -mt-5 lg:-mt-2 transform translate-y-1.5 py-2 border-b items-center flex"
+                id="search" hidden>
+                <input type="text" placeholder="Search.." class="flex-1">
+                <ion-icon name="close-outline" class="text-2xl hover:bg-gray-100 p-1 rounded-full mr-4 cursor-pointer"
+                    uk-toggle="target: #search;animation: uk-animation-slide-top-small"></ion-icon>
+            </div>
+
+            <nav class="responsive-nav border-b extanded mb-2 -mt-2">
+                <ul uk-switcher="connect: #chats-tab; animation: uk-animation-fade">
+                    <li class="uk-active"><a class="active" href="#0"> Friends </a></li>
+                    <li><a href="#0">Groups <span> 10 </span> </a></li>
+                </ul>
+            </nav>
+
+            <div class="contact-list px-2 uk-switcher" id="chats-tab">
+
+                <div class="p-1">
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-7.jpg" alt="">
+                        </div>
+                        <div class="contact-username"> Alex Dolgove</div>
+                    </a>
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-8.jpg" alt="">
+                            <span class="user_status status_online"></span>
+                        </div>
+                        <div class="contact-username"> Dennis Han</div>
+                    </a>
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-2.jpg" alt="">
+                            <span class="user_status"></span>
+                        </div>
+                        <div class="contact-username"> Erica Jones</div>
+                    </a>
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-3.jpg" alt="">
+                        </div>
+                        <div class="contact-username">Stella Johnson</div>
+                    </a>
+
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-5.jpg" alt="">
+                        </div>
+                        <div class="contact-username">Adrian Mohani </div>
+                    </a>
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-6.jpg" alt="">
+                        </div>
+                        <div class="contact-username"> Jonathan Madano</div>
+                    </a>
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-2.jpg" alt="">
+                            <span class="user_status"></span>
+                        </div>
+                        <div class="contact-username"> Erica Jones</div>
+                    </a>
+                    <a href="chats-friend.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-1.jpg" alt="">
+                            <span class="user_status status_online"></span>
+                        </div>
+                        <div class="contact-username"> Dennis Han</div>
+                    </a>
+
+
+                </div>
+                <div class="p-1">
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-7.jpg" alt="">
+                        </div>
+                        <div class="contact-username"> Alex Dolgove</div>
+                    </a>
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-8.jpg" alt="">
+                            <span class="user_status status_online"></span>
+                        </div>
+                        <div class="contact-username"> Dennis Han</div>
+                    </a>
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-2.jpg" alt="">
+                            <span class="user_status"></span>
+                        </div>
+                        <div class="contact-username"> Erica Jones</div>
+                    </a>
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-3.jpg" alt="">
+                        </div>
+                        <div class="contact-username">Stella Johnson</div>
+                    </a>
+
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-5.jpg" alt="">
+                        </div>
+                        <div class="contact-username">Adrian Mohani </div>
+                    </a>
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-6.jpg" alt="">
+                        </div>
+                        <div class="contact-username"> Jonathan Madano</div>
+                    </a>
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-2.jpg" alt="">
+                            <span class="user_status"></span>
+                        </div>
+                        <div class="contact-username"> Erica Jones</div>
+                    </a>
+                    <a href="chats-group.html">
+                        <div class="contact-avatar">
+                            <img src="assets/images/avatars/avatar-1.jpg" alt="">
+                            <span class="user_status status_online"></span>
+                        </div>
+                        <div class="contact-username"> Dennis Han</div>
+                    </a>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+   
+
+    <!-- For Night mode -->
+
+    <script>
+        (function (window, document, undefined) {
+            'use strict';
+            if (!('localStorage' in window)) return;
+            var nightMode = localStorage.getItem('gmtNightMode');
+            if (nightMode === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+        })(window, document);
+
+        (function (window, document, undefined) {
+            'use strict';
+            if (!('localStorage' in window)) return;
+
+            var nightModeToggle = document.querySelector('#night-mode');
+            if (!nightModeToggle) return;
+
+            nightModeToggle.addEventListener('click', function (event) {
+                event.preventDefault();
+                document.documentElement.classList.toggle('dark');
+                if (document.documentElement.classList.contains('dark')) {
+                    localStorage.setItem('gmtNightMode', 'true');
+                } else {
+                    localStorage.setItem('gmtNightMode', 'false');
+                }
+            }, false);
+        })(window, document);
+    </script>
+    <script>
+        async function fetchAndDisplayUsername() {
+            try {
+                const response = await fetch('/user-details', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin' // Include cookies in the request
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    document.getElementById('firstName-display').textContent = `${userData.firstName}`;
+                    document.getElementById('username-display').textContent = `@${userData.username}`;
+                    document.getElementById('profileImageUrl').src = userData.profileImageUrl;
+                    document.getElementById('profileImageUrl2').src = userData.profileImageUrl;
+                    document.getElementById('profileImageUrl3').src = userData.profileImageUrl;
+                    document.getElementById('profileImageUrl4').src = userData.profileImageUrl;
+                    document.getElementById('postTextarea').placeholder = `What's in Your Mind ? ${userData.firstName}!`;;
+                } else {
+                    console.error('Error fetching user data:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+            }
+        }
+
+        window.onload = fetchAndDisplayUsername;
+    </script>
+
+    <script>
+        document.getElementById('imageSelectPost').addEventListener('click', () => {
+            document.getElementById('imageInputPost').click();
+        });
+
+        document.getElementById('imageInputPost').addEventListener('change', (event) => {
+            const files = event.target.files;
+            const ImagePrevContainer = document.getElementById('ImagePrevContainer');
+            ImagePrevContainer.innerHTML = ''; // Clear previous previews
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    const imagePreview = document.createElement('img');
+                    imagePreview.src = e.target.result;
+                    imagePreview.alt = 'Image Preview';
+                    imagePreview.style.maxWidth = '100px';
+                    imagePreview.className = 'rounded-lg';
+                    ImagePrevContainer.appendChild(imagePreview);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('sendPostButton').addEventListener('click', async (event) => {
+            event.preventDefault();
+            const postText = document.getElementById('postTextarea').value;
+            const imageInput = document.getElementById('imageInputPost');
+            const formData = new FormData();
+
+            formData.append('postText', postText);
+            for (const file of imageInput.files) {
+                formData.append('postImages', file);
+            }
+
+            try {
+                const response = await fetch('/create-post', {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'same-origin'
+                });
+
+                if (response.ok) {
+                    console.log('Post created successfully.');
+                    document.getElementById('postTextarea').value = '';
+                    document.getElementById('ImagePrevContainer').innerHTML = ''; // Clear previews
+                    imageInput.value = ''; // Clear selected files
+                } else {
+                    console.error('Error creating post:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+            }
+        });
+    </script>
+
+    <script src="assets/js/script1.js"></script>
+
+    <!-- Javascript
+    ================================================== -->
+    <script src="../../code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="assets/js/tippy.all.min.js"></script>
+    <script src="assets/js/uikit.js"></script>
+    <script src="assets/js/simplebar.js"></script>
+    <script src="assets/js/custom.js"></script>
+    <script src="assets/js/bootstrap-select.min.js"></script>
+    <script src="../../unpkg.com/ionicons%405.2.3/dist/ionicons.js"></script>
+
+</body>
+
+<!-- Mirrored from demo.foxthemes.net/socialite/feed.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 20 Jul 2023 17:41:40 GMT -->
+
+</html>
